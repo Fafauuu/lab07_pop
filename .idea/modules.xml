@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/lab07_broadcaster/lab07_broadcaster.iml" filepath="$PROJECT_DIR$/lab07_broadcaster/lab07_broadcaster.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lab07_customer/lab07_customer.iml" filepath="$PROJECT_DIR$/lab07_customer/lab07_customer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lab07_editor/lab07_editor.iml" filepath="$PROJECT_DIR$/lab07_editor/lab07_editor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lab07_pop.iml" filepath="$PROJECT_DIR$/lab07_pop.iml" />
+    </modules>
+  </component>
+</project>
