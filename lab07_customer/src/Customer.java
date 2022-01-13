@@ -15,11 +15,11 @@ public class Customer extends CustomerData implements INotification, CustomerWin
     private IRegistration i;
     private final CustomerWindow gui;
     private boolean customerExported;
+    private boolean nameSet;
     private final List<NewsData> newsDataList;
 
     public static void main(String[] args) {
         Customer customer = new Customer();
-        customer.name = "secondCustomer";
     }
 
     public Customer() {
@@ -32,16 +32,20 @@ public class Customer extends CustomerData implements INotification, CustomerWin
     public void notify(NewsData newsdata) throws RemoteException {
         System.out.println("notified with: " + newsdata.news);
         newsDataList.add(newsdata);
-        gui.updateNewsList(newsDataList);
+        gui.updateNewsPanel(newsdata);
     }
 
     @Override
-    public void registerCustomer() {
+    public void registerCustomer(String name) {
         try {
             Registry reg = LocateRegistry.getRegistry("localhost",3000);
             i = (IRegistration) reg.lookup("Server");
             System.out.println("Server found");
-            if (!customerExported){
+            if (!nameSet) {
+                this.name = name;
+                nameSet = true;
+            }
+            if (!customerExported) {
                 this.broadcast = (INotification) UnicastRemoteObject.exportObject(this, 0);
                 customerExported = true;
             }

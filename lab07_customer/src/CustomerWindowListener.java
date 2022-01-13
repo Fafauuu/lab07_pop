@@ -1,4 +1,4 @@
 public interface CustomerWindowListener {
-    void registerCustomer();
+    void registerCustomer(String name);
     void unregisterCustomer();
 }

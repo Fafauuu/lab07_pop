@@ -2,12 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.rmi.StubNotFoundException;
 
 public class EditorWindow extends JFrame {
     private EditorWindowListener listener;
     private JButton sendNewsButton;
     private JPanel newsContentPanel;
-    private JTextField newsContentField;
+    private JTextArea newsContentTextArea;
 
     public EditorWindow() {
         this.setTitle("EDITOR APP");
@@ -15,7 +16,7 @@ public class EditorWindow extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
         mainPanel.setBounds(0, 0, 600, 600);
-        mainPanel.setBackground(new Color(0x144F62));
+        mainPanel.setBackground(new Color(0xBE9D16));
 
         setSendNewsButton();
         setNewsContentPanel();
@@ -30,11 +31,11 @@ public class EditorWindow extends JFrame {
     }
 
     private void setSendNewsButton() {
-        sendNewsButton = new JButton("REGISTER");
+        sendNewsButton = new JButton("SEND NEWS");
         sendNewsButton.setBounds(50, 25, 200, 50);
         sendNewsButton.addActionListener(e -> {
             if (e.getSource() == sendNewsButton && listener != null) {
-                listener.sendNews(newsContentField.getText());
+                listener.sendNews(newsContentTextArea.getText());
             }
         });
         this.add(sendNewsButton);
@@ -44,17 +45,18 @@ public class EditorWindow extends JFrame {
         newsContentPanel = new JPanel();
         newsContentPanel.setLayout(null);
         newsContentPanel.setBounds(50,150,500,400);
-        setNewsContentField();
+        setNewsContentTextArea();
         this.add(newsContentPanel);
     }
 
-    private void setNewsContentField() {
-        newsContentField = new JTextField("NEWS CONTENT");
-        newsContentField.setBounds(5,5,490,390);
-        newsContentField.addFocusListener(new FocusListener() {
+    private void setNewsContentTextArea() {
+        newsContentTextArea = new JTextArea("NEWS CONTENT");
+        newsContentTextArea.setBounds(5,5,490,390);
+        newsContentTextArea.setLineWrap(true);
+        newsContentTextArea.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                newsContentField.setText("");
+                newsContentTextArea.setText("");
             }
 
             @Override
@@ -62,7 +64,7 @@ public class EditorWindow extends JFrame {
 
             }
         });
-        newsContentPanel.add(newsContentField);
+        newsContentPanel.add(newsContentTextArea);
     }
 
     public void setListener(EditorWindowListener listener) {

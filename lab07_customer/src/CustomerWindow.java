@@ -2,17 +2,18 @@ import newsRoom.data.NewsData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class CustomerWindow extends JFrame {
     private CustomerWindowListener listener;
     private JButton registerButton;
     private JButton unregisterButton;
-    private JList<NewsData> newsJList;
-    private DefaultListModel<NewsData> model;
     private JPanel newsPanel;
     private JLabel newsLabel;
-    private List<NewsData> newsDataList;
+    private JPanel customerNamePanel;
+    private JTextField customerNameField;
+    private boolean customerNameFilled;
 
     public CustomerWindow() {
         this.setTitle("CUSTOMER APP");
@@ -24,8 +25,8 @@ public class CustomerWindow extends JFrame {
 
         setRegisterButton();
         setUnregisterButton();
-        setNewsList();
         setNewsPanel();
+        setNewsContentPanel();
 
         this.setResizable(false);
         this.setSize(600, 610);
@@ -34,15 +35,17 @@ public class CustomerWindow extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
         this.getContentPane().requestFocusInWindow();
-
     }
 
     private void setRegisterButton() {
         registerButton = new JButton("REGISTER");
         registerButton.setBounds(50, 25, 200, 50);
+        registerButton.setEnabled(false);
         registerButton.addActionListener(e -> {
             if (e.getSource() == registerButton && listener != null) {
-                listener.registerCustomer();
+                if (!customerNameField.getText().equals("")) {
+                    listener.registerCustomer(customerNameField.getText());
+                }
             }
         });
         this.add(registerButton);
@@ -51,6 +54,7 @@ public class CustomerWindow extends JFrame {
     private void setUnregisterButton() {
         unregisterButton = new JButton("UNREGISTER");
         unregisterButton.setBounds(325, 25, 200, 50);
+        unregisterButton.setEnabled(false);
         unregisterButton.addActionListener(e -> {
             if (e.getSource() == unregisterButton && listener != null) {
                 listener.unregisterCustomer();
@@ -59,48 +63,9 @@ public class CustomerWindow extends JFrame {
         this.add(unregisterButton);
     }
 
-    private void setNewsList() {
-        newsJList = new JList<>();
-        model = new DefaultListModel<>();
-        newsJList.setModel(model);
-        newsJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        if (newsDataList != null) {
-//            for (int i = 0; i < newsDataList.size(); i++) {
-//                model.addElement("News: " + i);
-//            }
-            model.addAll(newsDataList);
-        }
-        newsJList.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()){
-//                if (newsJList.getSelectedValue() != null) {
-//                    int index = Integer.parseInt(
-//                            newsJList.getSelectedValue().substring(newsJList.getSelectedValue().indexOf(" ") + 1));
-//                    newsChosenFromList(newsDataList.get(index - 1));
-//                }
-                newsChosenFromList(newsJList.getSelectedValue());
-            }
-        });
-        newsJList.setFont(new Font("Arial", Font.BOLD,20));
-        newsJList.setBounds(50,125,200,400);
-        this.add(newsJList);
-    }
-
-    private void newsChosenFromList(NewsData selectedValue) {
-        if (selectedValue != null) {
-            newsLabel.setText(
-                "<html>" +
-                    "<p>" + selectedValue.date + "</p>" +
-                    "<p><br>" + selectedValue.news +"</p>" +
-                "</html>"
-            );
-        } else {
-            newsLabel.setText("");
-        }
-    }
-
     private void setNewsPanel() {
         newsPanel = new JPanel();
-        newsPanel.setBounds(300,125,250,400);
+        newsPanel.setBounds(50,175,475,340);
         newsPanel.setLayout(null);
         setNewsLabel();
         this.add(newsPanel);
@@ -114,19 +79,56 @@ public class CustomerWindow extends JFrame {
         newsPanel.add(newsLabel);
     }
 
+    private void setNewsContentPanel() {
+        customerNamePanel = new JPanel();
+        customerNamePanel.setLayout(null);
+        customerNamePanel.setBounds(50,100,475,50);
+        setNewsContentField();
+        this.add(customerNamePanel);
+    }
+
+    private void setNewsContentField() {
+        customerNameField = new JTextField("CUSTOMER NAME");
+        customerNameField.setBounds(5,5,465,40);
+        customerNameField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                customerNameField.setText("");
+                customerNameFilled = true;
+                enableButtons();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!customerNameField.getText().equals("")) {
+                    customerNameField.setFocusable(false);
+                }
+            }
+        });
+        customerNamePanel.add(customerNameField);
+    }
+
+    private void enableButtons() {
+        if (customerNameFilled) {
+            registerButton.setEnabled(true);
+            unregisterButton.setEnabled(true);
+        }
+    }
+
     public void setListener(CustomerWindowListener listener) {
         this.listener = listener;
     }
 
-    public void updateNewsList(List<NewsData> newsDataList) {
-        this.newsDataList = newsDataList;
-//        model.clear();
-        if (!newsDataList.isEmpty()){
-//            for (int i = 1; i < this.newsDataList.size() + 1; i++) {
-//                model.addElement("News: " + i);
-//            }
-            model.addAll(this.newsDataList);
+    public void updateNewsPanel(NewsData newsData) {
+        if (newsData != null) {
+            newsLabel.setText(
+                "<html>" +
+                    "<p>" + newsData.date + "</p>" +
+                    "<p><br>" + newsData.news +"</p>" +
+                "</html>"
+            );
+        } else {
+            newsLabel.setText("");
         }
-        newsJList.updateUI();
     }
 }

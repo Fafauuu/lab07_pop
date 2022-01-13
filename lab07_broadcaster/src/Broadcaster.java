@@ -12,11 +12,11 @@ import java.security.Policy;
 import java.util.*;
 
 public class Broadcaster implements IConfiguration, IRegistration {
-    private Map<String, INotification> customers;
-    private List<NewsData> newsList;
+    private final List<CustomerData> customerDataList;
+    private final List<NewsData> newsList;
 
     public Broadcaster() {
-        customers = new HashMap<>();
+        customerDataList = new ArrayList<>();
         newsList = new ArrayList<>();
     }
 
@@ -45,13 +45,8 @@ public class Broadcaster implements IConfiguration, IRegistration {
         newsData.date = new Date();
         newsList.add(newsData);
 
-        System.out.println(news);
-
-        System.out.println(customers.size());
-
-        for (INotification iNotification : customers.values()) {
-            System.out.println("notified");
-            iNotification.notify(newsData);
+        for (CustomerData customerData : customerDataList) {
+            customerData.broadcast.notify(newsData);
         }
 
         return newsList.indexOf(newsData);
@@ -59,29 +54,36 @@ public class Broadcaster implements IConfiguration, IRegistration {
 
     @Override
     public boolean removeNews(int id) throws RemoteException {
-        newsList.remove(id);
-        return true;
+        try {
+            newsList.remove(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public CustomerData[] getCustomers() throws RemoteException {
-        return new CustomerData[0];
+        CustomerData[] customerData = new CustomerData[customerDataList.size()];
+        for (int i = 0; i < customerDataList.size(); i++) {
+            customerData[i] = customerDataList.get(i);
+        }
+        return customerData;
     }
 
     @Override
     public boolean register(String name, INotification broadcast) throws RemoteException {
-//        NewsData newsData = new NewsData();
-//        newsData.date = new Date();
-//        newsData.news = "just casual registration notifying";
-//        broadcast.notify(newsData);
-        customers.put(name, broadcast);
+        CustomerData customerData = new CustomerData();
+        customerData.name = name;
+        customerData.broadcast = broadcast;
+        customerDataList.add(customerData);
         System.out.println(name + " registered");
-        System.out.println(customers.values());
         return false;
     }
 
     @Override
     public boolean unregister(String name) throws RemoteException {
+        customerDataList.removeIf(customerData -> customerData.name.equals(name));
         System.out.println(name + " unregistered");
         return false;
     }

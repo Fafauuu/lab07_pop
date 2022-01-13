@@ -35,7 +35,8 @@ public class Editor implements EditorWindowListener{
     @Override
     public void sendNews(String news){
         try {
-            i.addNews(news);
+            int a =  i.addNews(news);
+            System.out.println(a);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
