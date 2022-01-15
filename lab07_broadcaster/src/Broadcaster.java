@@ -11,15 +11,18 @@ import java.rmi.server.UnicastRemoteObject;
 import java.security.Policy;
 import java.util.*;
 
-public class Broadcaster implements IConfiguration, IRegistration {
+public class Broadcaster implements IConfiguration, IRegistration, BroadcasterWindowListener {
     private final List<CustomerData> customerDataList;
     private final List<NewsData> newsList;
     private final Map<Integer, NewsData> newsDataMap;
+    private final BroadcasterWindow gui;
 
     public Broadcaster() {
         customerDataList = new ArrayList<>();
         newsList = new ArrayList<>();
         newsDataMap = new HashMap<>();
+        gui = new BroadcasterWindow();
+        gui.setListener(this);
     }
 
     public static void main(String[] args) {
@@ -38,6 +41,8 @@ public class Broadcaster implements IConfiguration, IRegistration {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+
     }
 
     @Override
@@ -50,10 +55,6 @@ public class Broadcaster implements IConfiguration, IRegistration {
         newsDataMap.put(newsDataId, newsData);
 
         newsList.add(newsData);
-
-        for (CustomerData customerData : customerDataList) {
-            customerData.broadcast.notify(newsData);
-        }
 
         return newsDataId;
     }
@@ -88,5 +89,33 @@ public class Broadcaster implements IConfiguration, IRegistration {
         customerDataList.removeIf(customerData -> customerData.name.equals(name));
         System.out.println(name + " unregistered");
         return false;
+    }
+
+    @Override
+    public void updateNewsList() {
+        Map<Integer, NewsData> mapToSend = new TreeMap<>();
+        for (Integer id : newsDataMap.keySet()) {
+            if (newsList.contains(newsDataMap.get(id))){
+                mapToSend.put(id, newsDataMap.get(id));
+            }
+        }
+        gui.updateNewsList(mapToSend);
+    }
+
+    @Override
+    public void editNews(Integer id, String news) {
+        newsDataMap.get(id).news = news;
+        System.out.println(newsDataMap.get(id).news);
+    }
+
+    @Override
+    public void notifyCustomers(Integer id) {
+        for (CustomerData customerData : customerDataList) {
+            try {
+                customerData.broadcast.notify(newsDataMap.get(id));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
