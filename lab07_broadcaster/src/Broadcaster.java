@@ -14,10 +14,12 @@ import java.util.*;
 public class Broadcaster implements IConfiguration, IRegistration {
     private final List<CustomerData> customerDataList;
     private final List<NewsData> newsList;
+    private final Map<Integer, NewsData> newsDataMap;
 
     public Broadcaster() {
         customerDataList = new ArrayList<>();
         newsList = new ArrayList<>();
+        newsDataMap = new HashMap<>();
     }
 
     public static void main(String[] args) {
@@ -43,23 +45,23 @@ public class Broadcaster implements IConfiguration, IRegistration {
         NewsData newsData = new NewsData();
         newsData.news = news;
         newsData.date = new Date();
+
+        int newsDataId = newsDataMap.size();
+        newsDataMap.put(newsDataId, newsData);
+
         newsList.add(newsData);
 
         for (CustomerData customerData : customerDataList) {
             customerData.broadcast.notify(newsData);
         }
 
-        return newsList.indexOf(newsData);
+        return newsDataId;
     }
 
     @Override
     public boolean removeNews(int id) throws RemoteException {
-        try {
-            newsList.remove(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        NewsData newsDataToRemove = newsDataMap.get(id);
+        return newsList.remove(newsDataToRemove);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class Customer extends CustomerData implements INotification, CustomerWin
     private final List<NewsData> newsDataList;
 
     public static void main(String[] args) {
-        Customer customer = new Customer();
+        new Customer();
     }
 
     public Customer() {
