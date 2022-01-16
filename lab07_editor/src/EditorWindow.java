@@ -67,6 +67,7 @@ public class EditorWindow extends JFrame {
         sendNewsButton.addActionListener(e -> {
             if (e.getSource() == sendNewsButton && listener != null) {
                 listener.sendNews(newsContentTextArea.getText());
+                newsContentTextArea.setText("");
             }
         });
         this.add(sendNewsButton);

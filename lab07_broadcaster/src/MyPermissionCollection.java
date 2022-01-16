@@ -6,7 +6,7 @@ import java.util.Enumeration;
 // https://stackoverflow.com/questions/11737971/programmatically-grant-permissions-without-using-policy-file
 class MyPermissionCollection extends PermissionCollection {
 
-    private static final long serialVersionUID = 614300921365729272L;
+    private static final long serialVersionUID = 614300145163144272L;
 
     ArrayList<Permission> perms = new ArrayList<Permission>();
 
