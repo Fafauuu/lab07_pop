@@ -29,7 +29,7 @@ public class Broadcaster implements IConfiguration, IRegistration, BroadcasterWi
 
         Policy.setPolicy(new MyPolicy());
 
-        if (System.getSecurityManager() == null){
+        if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
             System.out.println("Security Manager set");
         }
@@ -50,12 +50,9 @@ public class Broadcaster implements IConfiguration, IRegistration, BroadcasterWi
         NewsData newsData = new NewsData();
         newsData.news = news;
         newsData.date = new Date();
-
         int newsDataId = newsDataMap.size();
         newsDataMap.put(newsDataId, newsData);
-
         newsList.add(newsData);
-
         return newsDataId;
     }
 
@@ -95,7 +92,7 @@ public class Broadcaster implements IConfiguration, IRegistration, BroadcasterWi
     public void updateNewsList() {
         Map<Integer, NewsData> mapToSend = new TreeMap<>();
         for (Integer id : newsDataMap.keySet()) {
-            if (newsList.contains(newsDataMap.get(id))){
+            if (newsList.contains(newsDataMap.get(id))) {
                 mapToSend.put(id, newsDataMap.get(id));
             }
         }

@@ -18,7 +18,7 @@ public class BroadcasterWindow extends JFrame {
     private String newsChosen;
     private int idOfChosenNews;
     private JPanel newsPanel;
-    private JLabel newsLabel;
+    private JTextArea newsTextArea;
     private JPanel newsContentPanel;
     private JTextArea newsContentTextArea;
     private List<NewsData> newsDataList;
@@ -84,6 +84,9 @@ public class BroadcasterWindow extends JFrame {
                 String string = newsContentTextArea.getText();
                 listener.editNews(idOfChosenNews, string);
                 idOfChosenNews = -1;
+                newsContentTextArea.setText("");
+                saveNewsButton.setEnabled(false);
+                listener.updateNewsList();
             }
         });
         this.add(saveNewsButton);
@@ -95,7 +98,7 @@ public class BroadcasterWindow extends JFrame {
         notifyCustomersButton.setEnabled(false);
         notifyCustomersButton.addActionListener(e -> {
             if (e.getSource() == notifyCustomersButton && listener != null) {
-                if (newsChosen != null && !newsChosen.equals("")){
+                if (newsChosen != null && !newsChosen.equals("")) {
                     listener.notifyCustomers(idOfChosenNews);
                 }
             }
@@ -114,7 +117,7 @@ public class BroadcasterWindow extends JFrame {
             }
         }
         newsJList.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()){
+            if (!e.getValueIsAdjusting()) {
                 if (newsJList.getSelectedValue() != null) {
                     int index = Integer.parseInt(
                             newsJList.getSelectedValue().substring(newsJList.getSelectedValue().indexOf(" ") + 1));
@@ -123,26 +126,22 @@ public class BroadcasterWindow extends JFrame {
                 }
             }
         });
-        newsJList.setFont(new Font("Arial", Font.BOLD,20));
-        newsJList.setBounds(50,125,200,400);
+        newsJList.setFont(new Font("Arial", Font.BOLD, 20));
+        newsJList.setBounds(50, 125, 200, 400);
         this.add(newsJList);
     }
 
     private void newsChosenFromList(NewsData selectedValue) {
         if (selectedValue != null) {
             for (Integer id : newsDataMap.keySet()) {
-                if (newsDataMap.get(id).equals(selectedValue)){
+                if (newsDataMap.get(id).equals(selectedValue)) {
                     idOfChosenNews = id;
                 }
             }
-            newsLabel.setText(
-                "<html>" +
-                    "<p>" + selectedValue.news + "</p>" +
-                "</html>"
-            );
+            newsTextArea.setText(selectedValue.news);
             newsChosen = selectedValue.news;
         } else {
-            newsLabel.setText("");
+            newsTextArea.setText("");
             newsContentTextArea.setText("");
         }
     }
@@ -152,7 +151,7 @@ public class BroadcasterWindow extends JFrame {
         newsDataList.clear();
         newsDataList.addAll(newsDataMap.values());
         model.clear();
-        if (!newsDataList.isEmpty()){
+        if (!newsDataList.isEmpty()) {
             for (int i = 1; i < this.newsDataList.size() + 1; i++) {
                 model.addElement("News: " + i);
             }
@@ -162,31 +161,32 @@ public class BroadcasterWindow extends JFrame {
 
     private void setNewsPanel() {
         newsPanel = new JPanel();
-        newsPanel.setBounds(300,125,250,400);
+        newsPanel.setBounds(300, 125, 250, 400);
         newsPanel.setLayout(null);
         setNewsLabel();
         this.add(newsPanel);
     }
 
     private void setNewsLabel() {
-        newsLabel = new JLabel();
-        newsLabel.setVerticalAlignment(JLabel.TOP);
-        newsLabel.setBounds(5,5,200,400);
-        newsLabel.setFont(new Font("Arial", Font.PLAIN,18));
-        newsPanel.add(newsLabel);
+        newsTextArea = new JTextArea();
+        newsTextArea.setLineWrap(true);
+        newsTextArea.setWrapStyleWord(true);
+        newsTextArea.setBounds(5, 5, 240, 390);
+        newsTextArea.setFont(new Font("Arial", Font.PLAIN, 18));
+        newsPanel.add(newsTextArea);
     }
 
     private void setNewsContentPanel() {
         newsContentPanel = new JPanel();
         newsContentPanel.setLayout(null);
-        newsContentPanel.setBounds(600,125,250,400);
+        newsContentPanel.setBounds(600, 125, 250, 400);
         setNewsContentTextArea();
         this.add(newsContentPanel);
     }
 
     private void setNewsContentTextArea() {
         newsContentTextArea = new JTextArea();
-        newsContentTextArea.setBounds(5,5,240,390);
+        newsContentTextArea.setBounds(5, 5, 240, 390);
         newsContentTextArea.setLineWrap(true);
         newsContentPanel.add(newsContentTextArea);
     }

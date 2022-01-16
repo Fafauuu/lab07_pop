@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.SimpleDateFormat;
 
 public class CustomerWindow extends JFrame {
     private CustomerWindowListener listener;
     private JButton registerButton;
     private JButton unregisterButton;
     private JPanel newsPanel;
-    private JLabel newsLabel;
+    private JTextArea newsTextArea;
     private JPanel customerNamePanel;
     private JTextField customerNameField;
     private boolean customerNameFilled;
@@ -65,31 +66,32 @@ public class CustomerWindow extends JFrame {
 
     private void setNewsPanel() {
         newsPanel = new JPanel();
-        newsPanel.setBounds(50,175,475,340);
+        newsPanel.setBounds(50, 175, 475, 340);
         newsPanel.setLayout(null);
         setNewsLabel();
         this.add(newsPanel);
     }
 
     private void setNewsLabel() {
-        newsLabel = new JLabel();
-        newsLabel.setVerticalAlignment(JLabel.TOP);
-        newsLabel.setBounds(5,5,200,400);
-        newsLabel.setFont(new Font("Arial", Font.PLAIN,18));
-        newsPanel.add(newsLabel);
+        newsTextArea = new JTextArea();
+        newsTextArea.setLineWrap(true);
+        newsTextArea.setWrapStyleWord(true);
+        newsTextArea.setBounds(5, 5, 465, 330);
+        newsTextArea.setFont(new Font("Arial", Font.PLAIN, 18));
+        newsPanel.add(newsTextArea);
     }
 
     private void setNewsContentPanel() {
         customerNamePanel = new JPanel();
         customerNamePanel.setLayout(null);
-        customerNamePanel.setBounds(50,100,475,50);
+        customerNamePanel.setBounds(50, 100, 475, 50);
         setNewsContentField();
         this.add(customerNamePanel);
     }
 
     private void setNewsContentField() {
         customerNameField = new JTextField("CUSTOMER NAME");
-        customerNameField.setBounds(5,5,465,40);
+        customerNameField.setBounds(5, 5, 465, 40);
         customerNameField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -121,14 +123,10 @@ public class CustomerWindow extends JFrame {
 
     public void updateNewsPanel(NewsData newsData) {
         if (newsData != null) {
-            newsLabel.setText(
-                "<html>" +
-                    "<p>" + newsData.date + "</p>" +
-                    "<p><br>" + newsData.news +"</p>" +
-                "</html>"
-            );
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            newsTextArea.setText(simpleDateFormat.format(newsData.date) + "\n\n" + newsData.news);
         } else {
-            newsLabel.setText("");
+            newsTextArea.setText("");
         }
     }
 }

@@ -1,5 +1,3 @@
-import newsRoom.data.NewsData;
-
 public interface BroadcasterWindowListener {
     void updateNewsList();
     void editNews(Integer id, String news);

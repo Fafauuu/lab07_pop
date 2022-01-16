@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Editor implements EditorWindowListener{
+public class Editor implements EditorWindowListener {
     private IConfiguration broadcaster;
     private final EditorWindow gui;
-    private List<NewsData> newsCreated;
-    private Map<Integer, String> newsCreatedMap;
+    private final List<NewsData> newsCreated;
+    private final Map<Integer, String> newsCreatedMap;
 
     public static void main(String[] args) {
         Editor editor = new Editor();
@@ -30,7 +30,7 @@ public class Editor implements EditorWindowListener{
 
     private void findServer() {
         try {
-            Registry reg = LocateRegistry.getRegistry("localhost",3000);
+            Registry reg = LocateRegistry.getRegistry("localhost", 3000);
             broadcaster = (IConfiguration) reg.lookup("Server");
             System.out.println("Server found");
         } catch (RemoteException | NotBoundException e) {
@@ -39,17 +39,13 @@ public class Editor implements EditorWindowListener{
     }
 
     @Override
-    public void sendNews(String news){
+    public void sendNews(String news) {
         try {
-            int newsID =  broadcaster.addNews(news);
+            int newsID = broadcaster.addNews(news);
             NewsData newsData = new NewsData();
             newsData.news = news;
-
             newsCreatedMap.put(newsID, news);
-            System.out.println(newsID);
-
             newsCreated.add(newsData);
-
             gui.updateNewsList(newsCreated);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -59,7 +55,7 @@ public class Editor implements EditorWindowListener{
     @Override
     public void removeNews(String news) {
         for (Integer newsID : newsCreatedMap.keySet()) {
-            if (newsCreatedMap.get(newsID).equals(news)){
+            if (newsCreatedMap.get(newsID).equals(news)) {
                 boolean newsRemovedSuccessfully = false;
                 try {
                     newsRemovedSuccessfully = broadcaster.removeNews(newsID);

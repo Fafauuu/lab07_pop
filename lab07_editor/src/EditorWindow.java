@@ -18,7 +18,7 @@ public class EditorWindow extends JFrame {
     private DefaultListModel<String> model;
     private String newsChosen;
     private JPanel newsPanel;
-    private JLabel newsLabel;
+    private JTextArea newsTextArea;
     private List<NewsData> newsDataList;
     private JPanel customersPanel;
     private JLabel customersLabel;
@@ -135,14 +135,10 @@ public class EditorWindow extends JFrame {
 
     private void newsChosenFromList(NewsData selectedValue) {
         if (selectedValue != null) {
-            newsLabel.setText(
-                "<html>" +
-                    "<p>" + selectedValue.news + "</p>" +
-                "</html>"
-            );
+            newsTextArea.setText(selectedValue.news);
             newsChosen = selectedValue.news;
         } else {
-            newsLabel.setText("");
+            newsTextArea.setText("");
             newsChosen = "";
         }
     }
@@ -167,11 +163,12 @@ public class EditorWindow extends JFrame {
     }
 
     private void setNewsLabel() {
-        newsLabel = new JLabel();
-        newsLabel.setVerticalAlignment(JLabel.TOP);
-        newsLabel.setBounds(5,5,200,400);
-        newsLabel.setFont(new Font("Arial", Font.PLAIN,18));
-        newsPanel.add(newsLabel);
+        newsTextArea = new JTextArea();
+        newsTextArea.setLineWrap(true);
+        newsTextArea.setWrapStyleWord(true);
+        newsTextArea.setBounds(5,5,240,390);
+        newsTextArea.setFont(new Font("Arial", Font.PLAIN,18));
+        newsPanel.add(newsTextArea);
     }
 
     private void setCustomersPanel() {
@@ -185,7 +182,7 @@ public class EditorWindow extends JFrame {
     private void setCustomersLabel() {
         customersLabel = new JLabel();
         customersLabel.setVerticalAlignment(JLabel.TOP);
-        customersLabel.setBounds(5,5,200,400);
+        customersLabel.setBounds(5,5,240,390);
         customersLabel.setFont(new Font("Arial", Font.PLAIN,18));
         customersPanel.add(customersLabel);
     }
